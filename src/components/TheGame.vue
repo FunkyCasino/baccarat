@@ -1,12 +1,11 @@
 <script setup>
 import { useGameStore } from '../stores/game'
 
-const game = useGameStore()
+const game = useGameStore();
 
-game.resetGame()
-
+game.resetGame();
 </script>
 
 <template>
-    <div></div>
+  <div></div>
 </template>
