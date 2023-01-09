@@ -1,12 +1,18 @@
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { defineStore } from "pinia";
 
+const initialState = {
+  count: 0,
+};
+
 export const useGameStore = defineStore("game", () => {
-  const count = ref(0);
-  const doubleCount = computed(() => count.value * 2);
-  function increment() {
-    count.value++;
+  const state = {
+    count: ref(0),
+  };
+
+  function resetGame() {
+    state.count.value = initialState.count;
   }
 
-  return { count, doubleCount, increment };
+  return { resetGame };
 });
