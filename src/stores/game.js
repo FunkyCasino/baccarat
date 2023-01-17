@@ -85,25 +85,84 @@ export const useGameStore = defineStore("game", () => {
   const dealDealer = () => {};
 
   const setupNextRound = () => {
-    state.deck.value = shuffle(state.deck.value);
     state.playerCards.value = [];
     state.dealerCards.value = [];
   };
 
+  const winner = computed(() => {
+    
+  })
+
+  const drawCard = (cards) => {
+    cards.value = [...cards.value, state.deck.value.shift()];
+  };
+
+  const playerTotal = computed(() => {
+    return state.playerCards.value.reduce((acc, card) => {
+      acc += card.value;
+      if (acc >= 10) {
+        acc = parseInt(String(12)[1]);
+      }
+      return acc;
+    }, 0);
+  })
+  const dealerTotal = computed(() => {
+    return state.dealerCards.value.reduce((acc, card) => {
+      acc += card.value;
+      if (acc >= 10) {
+        acc = parseInt(String(12)[1]);
+      }
+      return acc;
+    }, 0);
+  })
+
+  const playInitial = () => {
+    drawCard(state.playerCards);
+    drawCard(state.dealerCards);
+    drawCard(state.playerCards);
+    drawCard(state.dealerCards);
+  }
+
+  const playLogic = () => {
+    if (
+      (playerTotal.value >= 8 && playerTotal.value <= 9) || 
+      (dealerTotal.value >= 8 || dealerTotal <= 9)
+    ) {
+      return;
+    }
+    if (playerTotal.value <= 5) {
+      drawCard(state.playerCards);
+    }
+    if (dealerTotal.value == 3 && (playerTotal.value[2] === undefined ||  playerTotal.value[2] !== 8) {
+
+    }
+  }
+
+  const recordPlay = () => {
+    const winner = state.history.value = [
+      ...state.history.value,
+      {
+        playerCards: state.playerCards.value,
+        dealerCards: state.dealerCards.value,
+      },
+    ];
+  }
+
+
   const actions = {
-    resetGame() {
+    resetShoe() {
       const newState = initialState();
       state.deck.value = newState.deck;
+      state.history.value = newState.history;
       state.playerCards.value = newState.playerCards;
       state.dealerCards.value = newState.dealerCards;
+      
     },
-    nextStep() {
-      if (state.playerCards.value.length === 0) {
-        dealPlayer();
-      }
-      if (state.dealerCards.value.length === 0) {
-        dealPlayer();
-      }
+    playRound() {
+      playInitial();
+      playLogic();
+      recordPlay();
+      setupNextRound();
     },
   };
 
